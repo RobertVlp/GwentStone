@@ -2,8 +2,11 @@ package main.player.cards;
 
 import java.util.ArrayList;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import fileio.CardInput;
 
+@JsonIgnoreProperties({"type", "row"})
 public class Card {
     private int mana;
     private int attackDamage;
@@ -67,5 +70,34 @@ public class Card {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getType() {
+        switch (name) {
+            case "Firestorm":
+            case "Heart Hound":
+            case "Winterfell":
+                return "Environment";
+        }
+
+        return "Something else";
+    }
+
+    public String getRow() {
+        switch (name) {
+            case "The Ripper":
+            case "Goliath":
+            case "Miraj":
+            case "Warden":
+                return "front row";
+
+            case "Sentinel":
+            case "Berserker":
+            case "The Cursed One":
+            case "Disciple":
+                return "back row";
+        }
+
+        return "da";
     }
 }

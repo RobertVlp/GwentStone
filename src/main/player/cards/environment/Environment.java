@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fileio.CardInput;
 import main.player.cards.Card;
 
-@JsonIgnoreProperties({"attackDamage", "health"})
+@JsonIgnoreProperties({"attackDamage", "health", "type", "row"})
 public class Environment extends Card {
 
     public Environment(CardInput card) {

@@ -24,6 +24,10 @@ public class Player {
     private int mana;
     private int numberOfWins;
     private int numberofGames;
+    private int frontRow;
+    private int backRow;
+    private int idx;
+    private boolean hasMoved;
 
     public Player() {
         deck = new ArrayList<>();
@@ -92,13 +96,16 @@ public class Player {
     }
 
     public void addCardInHand() {
+        if (deck.isEmpty())
+            return;
+
         cardsInHand.add(deck.get(0));
         deck.remove(deck.get(0));
     }
 
-    public void addMana() {
+    public void addMana(int roundNumber) {
         if (mana < 10)
-            mana++;
+            mana += roundNumber;
     }
 
     public int getMana() {
@@ -156,16 +163,73 @@ public class Player {
         this.numberofGames = numberOfGames;
     }
 
-    public void addCardOnTable(Table table, int x, int y, int handIdx) {
+    public int getFrontRow() {
+        return frontRow;
+    }
+
+    public void setFrontRow(int frontRow) {
+        this.frontRow = frontRow;
+    }
+
+    public int getBackRow() {
+        return backRow;
+    }
+
+    public void setBackRow(int backRow) {
+        this.backRow = backRow;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public void setIdx(int idx) {
+        this.idx = idx;
+    }
+
+    public boolean getHasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+
+    public String placeCardOnTable(int handIdx) {
         Card selectedCard = cardsInHand.get(handIdx);
 
         if (selectedCard.getMana() > mana)
-            System.out.println("Not enough mana to place card on table.");
-    }
+            return "Not enough mana to place card on table.";
+        else if (selectedCard.getType().equals("Environment"))
+            return "Cannot place environment card on table.";
+        else if (
+            (selectedCard.getRow().equals("front row") && Table.getInstance().isRowFull(frontRow)) || 
+            selectedCard.getRow().equals("back row") && Table.getInstance().isRowFull(backRow)
+        )
+            return "Cannot place card on table since row is full.";
 
-    @Override
-    public String toString() {
-        return "Player [deck=\n" + deck + ", cardsInHand=" + cardsInHand + "\n, mana=" + mana + "]\n";
+        mana -= selectedCard.getMana();
+
+        switch (selectedCard.getName()) {
+            case "The Ripper":
+            case "Miraj":
+            case "Goliath":
+            case "Warden":
+                Table.getInstance().addCardOnRow(selectedCard, frontRow);
+                break;
+
+            case "Sentinel":
+            case "Berserker":
+            case "The Cursed One":
+            case "Disciple":
+                Table.getInstance().addCardOnRow(selectedCard, backRow);
+                break;
+        
+            default:
+                break;
+        }
+
+        cardsInHand.remove(selectedCard);
+        return null;
     }
 }
- 

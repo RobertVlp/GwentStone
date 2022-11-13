@@ -5,18 +5,15 @@ import checker.Checker;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import checker.CheckerConstants;
 import fileio.Input;
-import main.player.Player;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -74,54 +71,8 @@ public final class Main {
         ArrayNode output = objectMapper.createArrayNode();
 
         //TODO add here the entry point to your implementation
-        Player playerOne = new Player();
-        Player playerTwo = new Player();
-        ArrayList<Player> players = new ArrayList<>();
-        // Table table = new Table();
-
-        for (var games : inputData.getGames()) {
-            int playerOneDeckIdx = games.getStartGame().getPlayerOneDeckIdx();
-            int playerTwoDeckIdx = games.getStartGame().getPlayerTwoDeckIdx();
-
-            playerOne.setDeck(inputData.getPlayerOneDecks().getDecks().get(playerOneDeckIdx));
-            playerTwo.setDeck(inputData.getPlayerTwoDecks().getDecks().get(playerTwoDeckIdx));
-            playerOne.setHero(games.getStartGame().getPlayerOneHero());
-            playerTwo.setHero(games.getStartGame().getPlayerTwoHero());
-            playerOne.shuffleDeck(games.getStartGame().getShuffleSeed());
-            playerTwo.shuffleDeck(games.getStartGame().getShuffleSeed());
-            playerOne.addCardInHand();
-            playerTwo.addCardInHand();
-            players.add(playerOne);
-            players.add(playerTwo);
-            
-            for (var action : games.getActions()) {
-                ObjectNode jsonObject = objectMapper.createObjectNode();
-
-                jsonObject.put("command", action.getCommand());
-
-                switch (action.getCommand()) {
-                    case "getPlayerDeck":
-                        jsonObject.put("playerIdx", action.getPlayerIdx());
-                        jsonObject.set("output", objectMapper.readTree(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(players.get(action.getPlayerIdx() - 1).getDeck())));
-                        output.add(jsonObject);
-                        break;
-                
-                    case "getPlayerHero":
-                        jsonObject.put("playerIdx", action.getPlayerIdx());
-                        jsonObject.set("output", objectMapper.readTree(players.get(action.getPlayerIdx() - 1).getHero().toString()));
-                        output.add(jsonObject);
-                        break;
-
-                    case "getPlayerTurn":
-                        jsonObject.put("output", 2);
-                        output.add(jsonObject);
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-        }
+        Game game = new Game(inputData);
+        game.startPlaying(objectMapper, output);
 
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         objectWriter.writeValue(new File(filePath2), output);
