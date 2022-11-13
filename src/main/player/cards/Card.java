@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import fileio.CardInput;
 
-@JsonIgnoreProperties({"type", "row"})
+@JsonIgnoreProperties({"type", "row", "frozen"})
 public class Card {
     private int mana;
     private int attackDamage;
@@ -14,6 +14,7 @@ public class Card {
     private String description;
     private ArrayList<String> colors;
     private String name;
+    private boolean isFrozen;
 
     public Card(CardInput card) {
         this.mana = card.getMana();
@@ -72,6 +73,14 @@ public class Card {
         this.name = name;
     }
 
+    public boolean isFrozen() {
+        return isFrozen;
+    }
+
+    public void setFrozen(boolean isFrozen) {
+        this.isFrozen = isFrozen;
+    }
+
     public String getType() {
         switch (name) {
             case "Firestorm":
@@ -98,6 +107,6 @@ public class Card {
                 return "back row";
         }
 
-        return "da";
+        return null;
     }
 }

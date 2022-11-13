@@ -7,6 +7,7 @@ import java.util.Random;
 import fileio.*;
 import main.Table;
 import main.player.cards.*;
+import main.player.cards.environment.Environment;
 import main.player.cards.environment.Firestorm;
 import main.player.cards.environment.HeartHound;
 import main.player.cards.environment.Winterfell;
@@ -104,8 +105,7 @@ public class Player {
     }
 
     public void addMana(int roundNumber) {
-        if (mana < 10)
-            mana += roundNumber;
+        mana += roundNumber;
     }
 
     public int getMana() {
@@ -118,6 +118,17 @@ public class Player {
 
     public void shuffleDeck(int shuffleSeed) {
         Collections.shuffle(deck, new Random(shuffleSeed));
+    }
+
+    public ArrayList<Card> getEnvironmentCardsInHand() {
+        ArrayList<Card> environmentCards = new ArrayList<>();
+
+        for (int i = 0; i < cardsInHand.size(); i++) {
+            if (cardsInHand.get(i).getType().equals("Environment"))
+                environmentCards.add(cardsInHand.get(i));
+        }
+
+        return environmentCards;
     }
 
     public Card getHero() {
@@ -224,12 +235,43 @@ public class Player {
             case "Disciple":
                 Table.getInstance().addCardOnRow(selectedCard, backRow);
                 break;
-        
-            default:
-                break;
         }
 
         cardsInHand.remove(selectedCard);
         return null;
+    }
+
+    public String useEnvironmentCard(int handIdx, int affectedRow) {
+        Card selectCard = cardsInHand.get(handIdx);
+        int mirroredRow = (affectedRow - 3) * (-1);
+
+        if (!selectCard.getType().equals("Environment"))
+            return "Chosen card is not of type environment.";
+        else if (selectCard.getMana() > mana)
+            return "Not enough mana to use environment card.";
+        else if (affectedRow == frontRow || affectedRow == backRow)
+            return "Chosen row does not belong to the enemy.";
+        else if (selectCard.getName().equals("Heart Hound") &&
+            Table.getInstance().isRowFull(mirroredRow)
+        )
+            return "Cannot steal enemy card since the player's row is full.";
+
+        mana -= selectCard.getMana();
+        ((Environment)selectCard).castSpecialAbility(affectedRow);
+
+        cardsInHand.remove(selectCard);
+        return null;
+    }
+
+    public void defrostCards() {
+        Card[][] cardMatrix = Table.getInstance().getCardMatrix();
+
+        for (int i = 0; i < Table.getInstance().getNumberOfColumns(); i++) {
+            if (cardMatrix[frontRow][i] != null && cardMatrix[frontRow][i].isFrozen())
+                cardMatrix[frontRow][i].setFrozen(false);
+
+            if (cardMatrix[backRow][i] != null && cardMatrix[backRow][i].isFrozen())
+                cardMatrix[backRow][i].setFrozen(false);
+        }
     }
 }

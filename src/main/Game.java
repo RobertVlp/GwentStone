@@ -67,6 +67,7 @@ public final class Game {
     private void performAction(ArrayList<Player> players,
         ActionsInput action, ObjectMapper objectMapper, ArrayNode output) throws IOException {
             ObjectNode jsonObject = objectMapper.createObjectNode();
+            String error = new String();
 
             jsonObject.put("command", action.getCommand());
 
@@ -81,7 +82,7 @@ public final class Game {
                         )
                     );
                     output.add(jsonObject);
-                break;
+                    break;
         
                 case "getPlayerHero":
                     jsonObject.put("playerIdx", action.getPlayerIdx());
@@ -90,7 +91,7 @@ public final class Game {
                         )
                     );
                     output.add(jsonObject);
-                break;
+                    break;
 
                 case "getPlayerTurn":
                         jsonObject.put("output", currentPlayer.getIdx());
@@ -99,11 +100,7 @@ public final class Game {
 
                 case "endPlayerTurn":
                     currentPlayer.setHasMoved(true);
-
-                    if (currentPlayer.getIdx() == 1)
-                        currentPlayer = players.get(1);
-                    else
-                        currentPlayer = players.get(0);
+                    Table.getInstance().removeDeadCards();
 
                     if (players.get(0).getHasMoved() && players.get(1).getHasMoved()) {
                         if (roundNumber.intValue() < 10)
@@ -114,12 +111,19 @@ public final class Game {
                             players.get(i).addCardInHand();
                             players.get(i).addMana(roundNumber.intValue());
                         }
+
+                        currentPlayer.defrostCards();
                     }
+
+                    if (currentPlayer.getIdx() == 1)
+                        currentPlayer = players.get(1);
+                    else
+                        currentPlayer = players.get(0);
 
                     break;
 
                 case "placeCard":
-                    String error = currentPlayer.placeCardOnTable(action.getHandIdx());
+                    error = currentPlayer.placeCardOnTable(action.getHandIdx());
 
                     if (error != null) {
                         jsonObject.put("error", error);
@@ -148,7 +152,6 @@ public final class Game {
                     break;
 
                 case "getCardsOnTable":
-                    output.add(jsonObject);
                     jsonObject.set(
                         "output", objectMapper.readTree(
                             objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(
@@ -156,6 +159,53 @@ public final class Game {
                             )
                         )
                     );
+                    output.add(jsonObject);
+                    break;
+
+                case "getEnvironmentCardsInHand":
+                    jsonObject.set(
+                        "output", objectMapper.readTree(
+                            objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(
+                                players.get(action.getPlayerIdx() - 1).getEnvironmentCardsInHand()
+                            )
+                        )
+                    );
+                    jsonObject.put("playerIdx", action.getPlayerIdx());
+                    output.add(jsonObject);
+                    break;
+
+                case "getCardAtPosition":
+                    jsonObject.set(
+                        "output", objectMapper.readTree(
+                            objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(
+                                Table.getInstance().getCardAtPosition(action.getX(), action.getY())
+                            )
+                        )
+                    );
+                    output.add(jsonObject);
+                    break;
+
+                case "useEnvironmentCard":
+                    error = currentPlayer.useEnvironmentCard(action.getHandIdx(), action.getAffectedRow());
+
+                    if (error != null) {
+                        jsonObject.put("handIdx", action.getHandIdx());
+                        jsonObject.put("affectedRow", action.getAffectedRow());
+                        jsonObject.put("error", error);
+                        output.add(jsonObject);
+                    }
+                    
+                    break;
+
+                case "getFrozenCardsOnTable":
+                    jsonObject.set(
+                        "output", objectMapper.readTree(
+                            objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(
+                                Table.getInstance().getFrozenCards()
+                            )
+                        )
+                    );
+                    output.add(jsonObject);
                     break;
 
                 default:

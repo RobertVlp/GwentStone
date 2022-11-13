@@ -10,6 +10,14 @@ public class Table {
     final int numberOfRows = 4;
     final int numberOfColumns = 5;
 
+    public int getNumberOfRows() {
+        return numberOfRows;
+    }
+
+    public int getNumberOfColumns() {
+        return numberOfColumns;
+    }
+
     public static Table getInstance() {
         if (instance == null) {
             instance = new Table();
@@ -26,6 +34,8 @@ public class Table {
         for (int i = column + 1; i < numberOfColumns; i++) {
             cardMatrix[row][i - 1] = cardMatrix[row][i];
         }
+
+        cardMatrix[row][numberOfColumns - 1] = null; 
     }
 
     public void initTable() {
@@ -66,5 +76,33 @@ public class Table {
         }
 
         return cardsOnTable;
+    }
+
+    public Card getCardAtPosition(int x, int y) {
+        return cardMatrix[x][y];
+    }
+
+    public void removeDeadCards() {
+        for (int i = 0; i < numberOfRows; i++) {
+            for (int j = 0; j < numberOfColumns; j++) {
+                if (cardMatrix[i][j] != null && cardMatrix[i][j].getHealth() == 0) {
+                    shiftLeft(i, j);
+                    j--;
+                }
+            }
+        }
+    }
+
+    public ArrayList<Card> getFrozenCards() {
+        ArrayList<Card> frozenCards = new ArrayList<>();
+
+        for (int i = 0; i < numberOfRows; i++) {
+            for (int j = 0; j < numberOfColumns; j++) {
+                if (cardMatrix[i][j] != null && cardMatrix[i][j].isFrozen())
+                    frozenCards.add(cardMatrix[i][j]);
+            }
+        }
+
+        return frozenCards;
     }
 }
