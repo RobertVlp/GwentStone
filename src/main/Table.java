@@ -4,15 +4,11 @@ import java.util.ArrayList;
 
 import main.player.cards.Card;
 
-public class Table {
+public final class Table {
     private static Table instance = null;
     private Card[][] cardMatrix;
     final int numberOfRows = 4;
     final int numberOfColumns = 5;
-
-    public int getNumberOfRows() {
-        return numberOfRows;
-    }
 
     public int getNumberOfColumns() {
         return numberOfColumns;
@@ -44,8 +40,9 @@ public class Table {
 
     public boolean isRowFull(int row) {
         for (int i = 0; i < numberOfColumns; i++) {
-            if (cardMatrix[row][i] == null)
+            if (cardMatrix[row][i] == null) {
                 return false;
+            }
         }
 
         return true;
@@ -98,11 +95,60 @@ public class Table {
 
         for (int i = 0; i < numberOfRows; i++) {
             for (int j = 0; j < numberOfColumns; j++) {
-                if (cardMatrix[i][j] != null && cardMatrix[i][j].isFrozen())
+                if (cardMatrix[i][j] != null && cardMatrix[i][j].isFrozen()) {
                     frozenCards.add(cardMatrix[i][j]);
+                }    
             }
         }
 
         return frozenCards;
+    }
+
+    public String cardUsesAttack(int xAttacker, int yAttacker, int xAttacked, int yAttacked) {
+        if ((xAttacker <= 1 && xAttacked <= 1) || (xAttacker >= 2 && yAttacker >= 2)) {
+            return "Attacked card does not belong to the enemy.";
+        } else if(cardMatrix[xAttacker][yAttacker].hasAttacked()) {
+            return "Attacker card has already attacked this turn.";
+        } else if (cardMatrix[xAttacker][yAttacker].isFrozen()) {
+            return "Attacker card is frozen.";
+        } else if (existsTank(xAttacked) && !cardMatrix[xAttacked][yAttacked].getType().equals("Tank")) {
+            return "Attacked card is not of type 'Tank'.";
+        }
+
+        int attackDamage = cardMatrix[xAttacker][yAttacker].getAttackDamage();
+        int attackedCardHealth = cardMatrix[xAttacked][yAttacked].getHealth();
+
+        cardMatrix[xAttacked][yAttacked].setHealth(attackedCardHealth - attackDamage);
+        cardMatrix[xAttacker][yAttacker].setHasAttacked(true);
+
+        return null;
+    }
+
+    private boolean existsTank(int xAttacked) {
+        if (xAttacked <= 1) {
+            for (int i = 0; i < numberOfColumns; i++) {
+                if (cardMatrix[1][i] != null && cardMatrix[1][i].getType().equals("Tank")) {
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < numberOfColumns; i++) {
+                if (cardMatrix[2][i] != null && cardMatrix[2][i].getType().equals("Tank")) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void resetAttackStatus() {
+        for (int i = 0; i < numberOfRows; i++) {
+            for (int j = 0; j < numberOfColumns; j++) {
+                if (cardMatrix[i][j] != null) {
+                    cardMatrix[i][j].setHasAttacked(false);
+                }
+            }
+        }
     }
 }

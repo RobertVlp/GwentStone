@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import fileio.CardInput;
 
-@JsonIgnoreProperties({"type", "row", "frozen"})
+@JsonIgnoreProperties({"type", "row", "frozen", "attacked"})
 public class Card {
     private int mana;
     private int attackDamage;
@@ -15,6 +15,7 @@ public class Card {
     private ArrayList<String> colors;
     private String name;
     private boolean isFrozen;
+    private boolean hasAttacked;
 
     public Card(CardInput card) {
         this.mana = card.getMana();
@@ -81,32 +82,29 @@ public class Card {
         this.isFrozen = isFrozen;
     }
 
-    public String getType() {
-        switch (name) {
-            case "Firestorm":
-            case "Heart Hound":
-            case "Winterfell":
-                return "Environment";
-        }
+    public boolean hasAttacked() {
+        return hasAttacked;
+    }
 
-        return "Something else";
+    public void setHasAttacked(boolean hasAttacked) {
+        this.hasAttacked = hasAttacked;
+    }
+
+    public String getType() {
+        return switch (name) {
+            case "Firestorm", "Heart Hound", "Winterfell" -> "Environment";
+            case "Warden", "Goliath" -> "Tank";
+            default -> "Something else";
+        };
+
     }
 
     public String getRow() {
-        switch (name) {
-            case "The Ripper":
-            case "Goliath":
-            case "Miraj":
-            case "Warden":
-                return "front row";
+        return switch (name) {
+            case "The Ripper", "Goliath", "Miraj", "Warden" -> "front row";
+            case "Sentinel", "Berserker", "The Cursed One", "Disciple" -> "back row";
+            default -> null;
+        };
 
-            case "Sentinel":
-            case "Berserker":
-            case "The Cursed One":
-            case "Disciple":
-                return "back row";
-        }
-
-        return null;
     }
 }

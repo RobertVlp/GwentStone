@@ -12,8 +12,9 @@ public class Winterfell extends Environment {
     @Override
     public void castSpecialAbility(int affectedRow) {
         for (int i = 0; i < Table.getInstance().getNumberOfColumns(); i++) {
-            if (Table.getInstance().getCardMatrix()[affectedRow][i] != null)
+            if (Table.getInstance().getCardMatrix()[affectedRow][i] != null) {
                 Table.getInstance().getCardMatrix()[affectedRow][i].setFrozen(true);
+            }
         }
     }
 }

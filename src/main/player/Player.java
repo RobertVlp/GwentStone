@@ -18,13 +18,13 @@ import main.player.cards.heros.LordRoyce;
 import main.player.cards.minions.*;
 
 
-public class Player {
-    private ArrayList<Card> deck;
-    private ArrayList<Card> cardsInHand;
+public final class Player {
+    private final ArrayList<Card> deck;
+    private final ArrayList<Card> cardsInHand;
     private Card hero;
     private int mana;
     private int numberOfWins;
-    private int numberofGames;
+    private int numberOfGames;
     private int frontRow;
     private int backRow;
     private int idx;
@@ -42,52 +42,19 @@ public class Player {
     public void setDeck(ArrayList<CardInput> deck) {
         for (var card : deck) {
             switch (card.getName()) {
-                case "Sentinel":
-                    this.deck.add(new Sentinel(card));
-                    break;
-                
-                case "Goliath":
-                    this.deck.add(new Goliath(card));
-                    break;
-
-                case "Berserker":
-                    this.deck.add(new Berserker(card));
-                    break;
-
-                case "Warden":
-                    this.deck.add(new Warden(card));
-                    break;
-
-                case "The Ripper":
-                    this.deck.add(new TheRipper(card));
-                    break;
-
-                case "Miraj":
-                    this.deck.add(new Miraj(card));
-                    break;
-
-                case "The Cursed One":
-                    this.deck.add(new TheCursedOne(card));
-                    break;
-
-                case "Disciple":
-                    this.deck.add(new Disciple(card));
-                    break;
-                
-                case "Firestorm":
-                    this.deck.add(new Firestorm(card));
-                    break;
-
-                case "Winterfell":
-                    this.deck.add(new Winterfell(card));
-                    break;
-
-                case "Heart Hound":
-                    this.deck.add(new HeartHound(card));
-                    break;
-
-                default:
-                    break;
+                case "Sentinel" -> this.deck.add(new Sentinel(card));
+                case "Goliath" -> this.deck.add(new Goliath(card));
+                case "Berserker" -> this.deck.add(new Berserker(card));
+                case "Warden" -> this.deck.add(new Warden(card));
+                case "The Ripper" -> this.deck.add(new TheRipper(card));
+                case "Miraj" -> this.deck.add(new Miraj(card));
+                case "The Cursed One" -> this.deck.add(new TheCursedOne(card));
+                case "Disciple" -> this.deck.add(new Disciple(card));
+                case "Firestorm" -> this.deck.add(new Firestorm(card));
+                case "Winterfell" -> this.deck.add(new Winterfell(card));
+                case "Heart Hound" -> this.deck.add(new HeartHound(card));
+                default -> {
+                }
             }
         }
     }
@@ -97,8 +64,9 @@ public class Player {
     }
 
     public void addCardInHand() {
-        if (deck.isEmpty())
+        if (deck.isEmpty()) {
             return;
+        } 
 
         cardsInHand.add(deck.get(0));
         deck.remove(deck.get(0));
@@ -123,9 +91,10 @@ public class Player {
     public ArrayList<Card> getEnvironmentCardsInHand() {
         ArrayList<Card> environmentCards = new ArrayList<>();
 
-        for (int i = 0; i < cardsInHand.size(); i++) {
-            if (cardsInHand.get(i).getType().equals("Environment"))
-                environmentCards.add(cardsInHand.get(i));
+        for (Card card : cardsInHand) {
+            if (card.getType().equals("Environment")) {
+                environmentCards.add(card);
+            }
         }
 
         return environmentCards;
@@ -137,24 +106,12 @@ public class Player {
 
     public void setHero(CardInput hero) {
         switch (hero.getName()) {
-            case "Lord Royce":
-                this.hero = new LordRoyce(hero);
-                break;
-            
-            case "Empress Thorina":
-                this.hero = new EmpressThorina(hero);
-                break;
-
-            case "King Mudface":
-                this.hero = new KingMudface(hero);
-                break;
-
-            case "General Kocioraw":
-                this.hero = new GeneralKocioraw(hero);
-                break;
-
-            default:
-                break;
+            case "Lord Royce" -> this.hero = new LordRoyce(hero);
+            case "Empress Thorina" -> this.hero = new EmpressThorina(hero);
+            case "King Mudface" -> this.hero = new KingMudface(hero);
+            case "General Kocioraw" -> this.hero = new GeneralKocioraw(hero);
+            default -> {
+            }
         }
     }
 
@@ -166,12 +123,12 @@ public class Player {
         this.numberOfWins = numberOfWins;
     }
 
-    public int getNumberofGames() {
-        return numberofGames;
+    public int getNumberOfGames() {
+        return numberOfGames;
     }
 
     public void setNumberOfGames(int numberOfGames) {
-        this.numberofGames = numberOfGames;
+        this.numberOfGames = numberOfGames;
     }
 
     public int getFrontRow() {
@@ -209,32 +166,23 @@ public class Player {
     public String placeCardOnTable(int handIdx) {
         Card selectedCard = cardsInHand.get(handIdx);
 
-        if (selectedCard.getMana() > mana)
+        if (selectedCard.getMana() > mana) {
             return "Not enough mana to place card on table.";
-        else if (selectedCard.getType().equals("Environment"))
+        } else if (selectedCard.getType().equals("Environment")) {
             return "Cannot place environment card on table.";
-        else if (
-            (selectedCard.getRow().equals("front row") && Table.getInstance().isRowFull(frontRow)) || 
-            selectedCard.getRow().equals("back row") && Table.getInstance().isRowFull(backRow)
-        )
+        } else if (
+            (selectedCard.getRow().equals("front row") && Table.getInstance().isRowFull(frontRow))
+            || selectedCard.getRow().equals("back row") && Table.getInstance().isRowFull(backRow)
+        ) {
             return "Cannot place card on table since row is full.";
+        }
 
         mana -= selectedCard.getMana();
 
         switch (selectedCard.getName()) {
-            case "The Ripper":
-            case "Miraj":
-            case "Goliath":
-            case "Warden":
-                Table.getInstance().addCardOnRow(selectedCard, frontRow);
-                break;
-
-            case "Sentinel":
-            case "Berserker":
-            case "The Cursed One":
-            case "Disciple":
-                Table.getInstance().addCardOnRow(selectedCard, backRow);
-                break;
+            case "The Ripper", "Miraj", "Goliath", "Warden" -> Table.getInstance().addCardOnRow(selectedCard, frontRow);
+            case "Sentinel", "Berserker", "The Cursed One", "Disciple" ->
+                    Table.getInstance().addCardOnRow(selectedCard, backRow);
         }
 
         cardsInHand.remove(selectedCard);
@@ -245,16 +193,17 @@ public class Player {
         Card selectCard = cardsInHand.get(handIdx);
         int mirroredRow = (affectedRow - 3) * (-1);
 
-        if (!selectCard.getType().equals("Environment"))
+        if (!selectCard.getType().equals("Environment")) {
             return "Chosen card is not of type environment.";
-        else if (selectCard.getMana() > mana)
+        } else if (selectCard.getMana() > mana) {
             return "Not enough mana to use environment card.";
-        else if (affectedRow == frontRow || affectedRow == backRow)
+        } else if (affectedRow == frontRow || affectedRow == backRow) {
             return "Chosen row does not belong to the enemy.";
-        else if (selectCard.getName().equals("Heart Hound") &&
-            Table.getInstance().isRowFull(mirroredRow)
-        )
+        } else if (
+            selectCard.getName().equals("Heart Hound") && Table.getInstance().isRowFull(mirroredRow)
+        ) {
             return "Cannot steal enemy card since the player's row is full.";
+        }          
 
         mana -= selectCard.getMana();
         ((Environment)selectCard).castSpecialAbility(affectedRow);
@@ -267,11 +216,13 @@ public class Player {
         Card[][] cardMatrix = Table.getInstance().getCardMatrix();
 
         for (int i = 0; i < Table.getInstance().getNumberOfColumns(); i++) {
-            if (cardMatrix[frontRow][i] != null && cardMatrix[frontRow][i].isFrozen())
+            if (cardMatrix[frontRow][i] != null && cardMatrix[frontRow][i].isFrozen()) {
                 cardMatrix[frontRow][i].setFrozen(false);
+            }
 
-            if (cardMatrix[backRow][i] != null && cardMatrix[backRow][i].isFrozen())
+            if (cardMatrix[backRow][i] != null && cardMatrix[backRow][i].isFrozen()) {
                 cardMatrix[backRow][i].setFrozen(false);
+            }  
         }
     }
 }
