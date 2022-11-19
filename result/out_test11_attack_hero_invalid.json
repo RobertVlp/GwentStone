@@ -1,4 +1,16 @@
 [ {
+  "command" : "getCardAtPosition",
+  "x" : 2,
+  "y" : 0,
+  "output" : {
+    "mana" : 1,
+    "attackDamage" : 5,
+    "health" : 8,
+    "description" : "Premium card: No matter how many, his body will fight. Save your breath for the Mountain is strong.",
+    "colors" : [ "Red", "Purple" ],
+    "name" : "Goliath"
+  }
+}, {
   "command" : "getPlayerHero",
   "playerIdx" : 1,
   "output" : {
@@ -16,16 +28,18 @@
     "description" : "Standard card: Exact precision is her mantra, emotion is for the weak.",
     "colors" : [ "Black", "Red" ],
     "name" : "Empress Thorina",
-    "health" : 30
+    "health" : 18
   }
+}, {
+  "command" : "useAttackHero",
+  "cardAttacker" : {
+    "x" : 2,
+    "y" : 1
+  },
+  "error" : "Attacker card is frozen."
 }, {
   "command" : "getCardsInHand",
   "output" : [ {
-    "mana" : 2,
-    "description" : "Premium card: All is white. My mouth is frozen and I must scream.",
-    "colors" : [ "White", "Grey", "Black" ],
-    "name" : "Winterfell"
-  }, {
     "mana" : 1,
     "attackDamage" : 6,
     "health" : 3,
@@ -36,15 +50,23 @@
   "playerIdx" : 2
 }, {
   "command" : "getPlayerMana",
-  "output" : 7,
+  "output" : 5,
   "playerIdx" : 2
 }, {
   "command" : "getPlayerTurn",
   "output" : 2
 }, {
-  "command" : "placeCard",
-  "error" : "Cannot place environment card on table.",
-  "handIdx" : 0
+  "command" : "getCardAtPosition",
+  "x" : 0,
+  "y" : 0,
+  "output" : {
+    "mana" : 1,
+    "attackDamage" : 6,
+    "health" : 3,
+    "description" : "Standard card: Trained by the best, nothing will catch him off-guard.",
+    "colors" : [ "Black", "White" ],
+    "name" : "Sentinel"
+  }
 }, {
   "command" : "getPlayerHero",
   "playerIdx" : 1,
@@ -63,19 +85,29 @@
     "description" : "Standard card: Exact precision is her mantra, emotion is for the weak.",
     "colors" : [ "Black", "Red" ],
     "name" : "Empress Thorina",
-    "health" : 30
+    "health" : 18
   }
 }, {
-  "command" : "placeCard",
-  "error" : "Cannot place environment card on table.",
-  "handIdx" : 0
+  "command" : "useAttackHero",
+  "cardAttacker" : {
+    "x" : 1,
+    "y" : 1
+  },
+  "error" : "Attacked card is not of type 'Tank'."
+}, {
+  "command" : "useAttackHero",
+  "cardAttacker" : {
+    "x" : 3,
+    "y" : 1
+  },
+  "error" : "Attacker card has already attacked this turn."
 }, {
   "command" : "getPlayerMana",
-  "output" : 12,
+  "output" : 14,
   "playerIdx" : 2
 }, {
   "command" : "getPlayerMana",
-  "output" : 10,
+  "output" : 16,
   "playerIdx" : 1
 }, {
   "command" : "getCardsOnTable",
@@ -86,11 +118,25 @@
     "description" : "Standard card: Trained by the best, nothing will catch him off-guard.",
     "colors" : [ "Black", "White" ],
     "name" : "Sentinel"
+  }, {
+    "mana" : 1,
+    "attackDamage" : 5,
+    "health" : 1,
+    "description" : "Standard card: A drink can always be served, with the blood of his enemies.",
+    "colors" : [ "Purple", "Yellow" ],
+    "name" : "Berserker"
   } ], [ {
     "mana" : 2,
     "attackDamage" : 5,
     "health" : 4,
     "description" : "Premium card: Insanity is always an option, now it is an absolute.",
+    "colors" : [ "Red", "Black" ],
+    "name" : "Miraj"
+  }, {
+    "mana" : 1,
+    "attackDamage" : 6,
+    "health" : 3,
+    "description" : "Standard card: When he is near, close your eyes. They betray your mind.",
     "colors" : [ "Red", "Black" ],
     "name" : "Miraj"
   } ], [ {
@@ -125,25 +171,6 @@
 }, {
   "command" : "getCardsInHand",
   "output" : [ {
-    "mana" : 2,
-    "description" : "Premium card: All is white. My mouth is frozen and I must scream.",
-    "colors" : [ "White", "Grey", "Black" ],
-    "name" : "Winterfell"
-  }, {
-    "mana" : 1,
-    "attackDamage" : 6,
-    "health" : 3,
-    "description" : "Standard card: When he is near, close your eyes. They betray your mind.",
-    "colors" : [ "Red", "Black" ],
-    "name" : "Miraj"
-  }, {
-    "mana" : 1,
-    "attackDamage" : 5,
-    "health" : 1,
-    "description" : "Standard card: A drink can always be served, with the blood of his enemies.",
-    "colors" : [ "Purple", "Yellow" ],
-    "name" : "Berserker"
-  }, {
     "mana" : 1,
     "attackDamage" : 4,
     "health" : 8,

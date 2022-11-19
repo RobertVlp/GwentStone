@@ -3,9 +3,9 @@ package main.player.cards.minions;
 import fileio.CardInput;
 import main.player.cards.Card;
 
-public class Sentinel extends Card {
+public final class Sentinel extends Card {
 
-    public Sentinel(CardInput card) {
+    public Sentinel(final CardInput card) {
         super(card);
     }
 }

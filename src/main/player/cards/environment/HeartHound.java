@@ -1,18 +1,18 @@
 package main.player.cards.environment;
 
-import main.Table;
-import main.player.cards.*;
+import main.game.Table;
+import main.player.cards.Card;
 
 import fileio.CardInput;
 
-public class HeartHound extends Environment {
+public final class HeartHound extends Environment {
 
-    public HeartHound(CardInput card) {
+    public HeartHound(final CardInput card) {
         super(card);
     }
 
     @Override
-    public void castSpecialAbility(int affectedRow) {
+    public void castSpecialAbility(final int affectedRow) {
         int mirroredRow = (affectedRow - 3) * (-1);
 
         Card[][] cardMatrix = Table.getInstance().getCardMatrix();

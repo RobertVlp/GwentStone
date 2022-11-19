@@ -8,11 +8,15 @@ import main.player.cards.Card;
 @JsonIgnoreProperties({"attackDamage", "health", "type", "row", "frozen"})
 public class Environment extends Card {
 
-    public Environment(CardInput card) {
+    public Environment(final CardInput card) {
         super(card);
     }
-    
-    public void castSpecialAbility(int affectedRow) {
+
+
+    /**
+     * @param affectedRow is the affected row by the Environment card
+     */
+    public void castSpecialAbility(final int affectedRow) {
 
     }
 }

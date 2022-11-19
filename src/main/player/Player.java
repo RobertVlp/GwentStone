@@ -4,18 +4,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import fileio.*;
-import main.Table;
-import main.player.cards.*;
+
+import fileio.CardInput;
+import main.game.Table;
+import main.player.cards.Card;
 import main.player.cards.environment.Environment;
 import main.player.cards.environment.Firestorm;
 import main.player.cards.environment.HeartHound;
 import main.player.cards.environment.Winterfell;
-import main.player.cards.heros.EmpressThorina;
-import main.player.cards.heros.GeneralKocioraw;
-import main.player.cards.heros.KingMudface;
-import main.player.cards.heros.LordRoyce;
-import main.player.cards.minions.*;
+import main.player.cards.heroes.EmpressThorina;
+import main.player.cards.heroes.GeneralKocioraw;
+import main.player.cards.heroes.KingMudface;
+import main.player.cards.heroes.LordRoyce;
+import main.player.cards.minions.Berserker;
+import main.player.cards.minions.Warden;
+import main.player.cards.minions.Sentinel;
+import main.player.cards.minions.Goliath;
+import main.player.cards.minions.TheRipper;
+import main.player.cards.minions.Miraj;
+import main.player.cards.minions.TheCursedOne;
+import main.player.cards.minions.Disciple;
 
 
 public final class Player {
@@ -24,7 +32,6 @@ public final class Player {
     private Card hero;
     private int mana;
     private int numberOfWins;
-    private int numberOfGames;
     private int frontRow;
     private int backRow;
     private int idx;
@@ -35,59 +42,62 @@ public final class Player {
         cardsInHand = new ArrayList<>();
     }
 
-    public ArrayList<Card> getDeck() {
-        return deck;
+    /**
+     * @param shuffleSeed is the seed at which the deck is shuffled
+     */
+    public void shuffleDeck(final int shuffleSeed) {
+        Collections.shuffle(deck, new Random(shuffleSeed));
     }
 
-    public void setDeck(ArrayList<CardInput> deck) {
-        for (var card : deck) {
+    /** Deep copy the deck from the input
+     * @param deck is the deck of the player form the input
+     */
+    public void setDeck(final ArrayList<CardInput> deck) {
+        for (CardInput card : deck) {
             switch (card.getName()) {
                 case "Sentinel" -> this.deck.add(new Sentinel(card));
+
                 case "Goliath" -> this.deck.add(new Goliath(card));
+
                 case "Berserker" -> this.deck.add(new Berserker(card));
+
                 case "Warden" -> this.deck.add(new Warden(card));
+
                 case "The Ripper" -> this.deck.add(new TheRipper(card));
+
                 case "Miraj" -> this.deck.add(new Miraj(card));
+
                 case "The Cursed One" -> this.deck.add(new TheCursedOne(card));
+
                 case "Disciple" -> this.deck.add(new Disciple(card));
+
                 case "Firestorm" -> this.deck.add(new Firestorm(card));
+
                 case "Winterfell" -> this.deck.add(new Winterfell(card));
+
                 case "Heart Hound" -> this.deck.add(new HeartHound(card));
+
                 default -> {
                 }
             }
         }
     }
 
-    public ArrayList<Card> getCardsInHand() {
-        return cardsInHand;
-    }
-
+    /**
+     * Adds one card in the hand of the player
+     */
     public void addCardInHand() {
         if (deck.isEmpty()) {
             return;
-        } 
+        }
 
         cardsInHand.add(deck.get(0));
         deck.remove(deck.get(0));
     }
 
-    public void addMana(int roundNumber) {
-        mana += roundNumber;
-    }
-
-    public int getMana() {
-        return mana;
-    }
-
-    public void setMana(int mana) {
-        this.mana = mana;
-    }
-
-    public void shuffleDeck(int shuffleSeed) {
-        Collections.shuffle(deck, new Random(shuffleSeed));
-    }
-
+    /**
+     * @return the Environment cards that are in hand
+     */
     public ArrayList<Card> getEnvironmentCardsInHand() {
         ArrayList<Card> environmentCards = new ArrayList<>();
 
@@ -100,70 +110,29 @@ public final class Player {
         return environmentCards;
     }
 
-    public Card getHero() {
-        return hero;
-    }
-
-    public void setHero(CardInput hero) {
+    /**
+     * @param hero is the Hero of the current player
+     */
+    public void setHero(final CardInput hero) {
         switch (hero.getName()) {
             case "Lord Royce" -> this.hero = new LordRoyce(hero);
+
             case "Empress Thorina" -> this.hero = new EmpressThorina(hero);
+
             case "King Mudface" -> this.hero = new KingMudface(hero);
+
             case "General Kocioraw" -> this.hero = new GeneralKocioraw(hero);
+
             default -> {
             }
         }
     }
 
-    public int getNumberOfWins() {
-        return numberOfWins;
-    }
-
-    public void setNumberOfWins(int numberOfWins) {
-        this.numberOfWins = numberOfWins;
-    }
-
-    public int getNumberOfGames() {
-        return numberOfGames;
-    }
-
-    public void setNumberOfGames(int numberOfGames) {
-        this.numberOfGames = numberOfGames;
-    }
-
-    public int getFrontRow() {
-        return frontRow;
-    }
-
-    public void setFrontRow(int frontRow) {
-        this.frontRow = frontRow;
-    }
-
-    public int getBackRow() {
-        return backRow;
-    }
-
-    public void setBackRow(int backRow) {
-        this.backRow = backRow;
-    }
-
-    public int getIdx() {
-        return idx;
-    }
-
-    public void setIdx(int idx) {
-        this.idx = idx;
-    }
-
-    public boolean getHasMoved() {
-        return hasMoved;
-    }
-
-    public void setHasMoved(boolean hasMoved) {
-        this.hasMoved = hasMoved;
-    }
-
-    public String placeCardOnTable(int handIdx) {
+    /**
+     * @param handIdx is the index from the cards in hand
+     * @return error message in case of failure when placing a card
+     */
+    public String placeCardOnTable(final int handIdx) {
         Card selectedCard = cardsInHand.get(handIdx);
 
         if (selectedCard.getMana() > mana) {
@@ -180,16 +149,24 @@ public final class Player {
         mana -= selectedCard.getMana();
 
         switch (selectedCard.getName()) {
-            case "The Ripper", "Miraj", "Goliath", "Warden" -> Table.getInstance().addCardOnRow(selectedCard, frontRow);
+            case "The Ripper", "Miraj", "Goliath",
+                    "Warden" -> Table.getInstance().addCardOnRow(selectedCard, frontRow);
             case "Sentinel", "Berserker", "The Cursed One", "Disciple" ->
                     Table.getInstance().addCardOnRow(selectedCard, backRow);
+            default -> {
+            }
         }
 
         cardsInHand.remove(selectedCard);
         return null;
     }
 
-    public String useEnvironmentCard(int handIdx, int affectedRow) {
+    /**
+     * @param handIdx is the index from the cards in hand
+     * @param affectedRow is the affected row by the Environment card
+     * @return error message in case of failure when using the card
+     */
+    public String useEnvironmentCard(final int handIdx, final int affectedRow) {
         Card selectCard = cardsInHand.get(handIdx);
         int mirroredRow = (affectedRow - 3) * (-1);
 
@@ -203,15 +180,18 @@ public final class Player {
             selectCard.getName().equals("Heart Hound") && Table.getInstance().isRowFull(mirroredRow)
         ) {
             return "Cannot steal enemy card since the player's row is full.";
-        }          
+        }
 
         mana -= selectCard.getMana();
-        ((Environment)selectCard).castSpecialAbility(affectedRow);
+        ((Environment) selectCard).castSpecialAbility(affectedRow);
 
         cardsInHand.remove(selectCard);
         return null;
     }
 
+    /**
+     * Defrosts all the cards on the game table
+     */
     public void defrostCards() {
         Card[][] cardMatrix = Table.getInstance().getCardMatrix();
 
@@ -222,7 +202,74 @@ public final class Player {
 
             if (cardMatrix[backRow][i] != null && cardMatrix[backRow][i].isFrozen()) {
                 cardMatrix[backRow][i].setFrozen(false);
-            }  
+            }
         }
+    }
+
+    public int getNumberOfWins() {
+        return numberOfWins;
+    }
+
+    public void setNumberOfWins(final int numberOfWins) {
+        this.numberOfWins = numberOfWins;
+    }
+
+    public void increaseNumberOfWins() {
+        numberOfWins++;
+    }
+
+    public void setFrontRow(final int frontRow) {
+        this.frontRow = frontRow;
+    }
+
+    public void setBackRow(final int backRow) {
+        this.backRow = backRow;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public void setIdx(final int idx) {
+        this.idx = idx;
+    }
+
+    public boolean getHasMoved() {
+        return hasMoved;
+    }
+
+    public void setHasMoved(final boolean hasMoved) {
+        this.hasMoved = hasMoved;
+    }
+    public int getFrontRow() {
+        return frontRow;
+    }
+
+    public int getBackRow() {
+        return backRow;
+    }
+
+    public ArrayList<Card> getDeck() {
+        return deck;
+    }
+
+    public void addMana(final int roundNumber) {
+        mana += roundNumber;
+    }
+
+    public int getMana() {
+        return mana;
+    }
+
+    public void setMana(final int mana) {
+        this.mana = mana;
+    }
+
+    public ArrayList<Card> getCardsInHand() {
+        return cardsInHand;
+    }
+
+    public Card getHero() {
+        return hero;
     }
 }

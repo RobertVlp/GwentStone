@@ -17,7 +17,7 @@ public class Card {
     private boolean isFrozen;
     private boolean hasAttacked;
 
-    public Card(CardInput card) {
+    public Card(final CardInput card) {
         this.mana = card.getMana();
         this.attackDamage = card.getAttackDamage();
         this.health = card.getHealth();
@@ -30,7 +30,7 @@ public class Card {
         return mana;
     }
 
-    public void setMana(int mana) {
+    public void setMana(final int mana) {
         this.mana = mana;
     }
 
@@ -38,7 +38,7 @@ public class Card {
         return attackDamage;
     }
 
-    public void setAttackDamage(int attackDamage) {
+    public void setAttackDamage(final int attackDamage) {
         this.attackDamage = attackDamage;
     }
 
@@ -46,7 +46,7 @@ public class Card {
         return health;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(final int health) {
         this.health = health;
     }
 
@@ -54,7 +54,7 @@ public class Card {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -62,7 +62,7 @@ public class Card {
         return colors;
     }
 
-    public void setColors(ArrayList<String> colors) {
+    public void setColors(final ArrayList<String> colors) {
         this.colors = colors;
     }
 
@@ -70,7 +70,7 @@ public class Card {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -78,33 +78,59 @@ public class Card {
         return isFrozen;
     }
 
-    public void setFrozen(boolean isFrozen) {
-        this.isFrozen = isFrozen;
+    public void setFrozen(final boolean frozen) {
+        this.isFrozen = frozen;
     }
 
     public boolean hasAttacked() {
         return hasAttacked;
     }
 
-    public void setHasAttacked(boolean hasAttacked) {
+    public void setHasAttacked(final boolean hasAttacked) {
         this.hasAttacked = hasAttacked;
     }
 
+
+    /**
+     * @return the type of the card, useful for Tanks and Environments
+     */
     public String getType() {
         return switch (name) {
             case "Firestorm", "Heart Hound", "Winterfell" -> "Environment";
+
             case "Warden", "Goliath" -> "Tank";
+
             default -> "Something else";
         };
 
     }
 
+
+    /**
+     * @return the respective row for Minions or null otherwise
+     */
     public String getRow() {
         return switch (name) {
             case "The Ripper", "Goliath", "Miraj", "Warden" -> "front row";
+
             case "Sentinel", "Berserker", "The Cursed One", "Disciple" -> "back row";
+
             default -> null;
         };
+
+    }
+
+
+    /**
+     * @param xAttacker is coordinate x for card that uses its ability
+     * @param yAttacker is coordinate y for card that uses its ability
+     * @param xAttacked is coordinate x for card that is attacked
+     * @param yAttacked is coordinate y for card that is attacked
+     */
+    public void useSpecialAbility(final int xAttacker,
+                                  final int yAttacker,
+                                  final int xAttacked,
+                                  final int yAttacked) {
 
     }
 }
