@@ -182,8 +182,8 @@ public final class Table {
     }
 
     /**
-     * @param xAttacker the x coordinate of the card that attacks
-     * @param yAttacker the y coordinate of the card that attacks
+     * @param xAttacker the x coordinate of the card that uses its ability
+     * @param yAttacker the y coordinate of the card that uses its ability
      * @param xAttacked the x coordinate of the card that is attacked
      * @param yAttacked the y coordinate of the card that is attacked
      * @return an error message in case of failure when using the ability
@@ -246,7 +246,7 @@ public final class Table {
 
     /**
      * @param player is the player that uses his hero's ability
-     * @param affectedRow is the affected row by the hero ability
+     * @param affectedRow is the affected row by the hero's ability
      * @return an error message in case of failure when using the hero's ability
      */
     public String useHeroAbility(final Player player, final int affectedRow) {
